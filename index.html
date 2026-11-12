@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Journey Through the Eustachian Tube</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Sora:wght@400;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--bg:#F3F7FA;--card:#fff;--ink:#0B2545;--mut:#4A5D73;--acc:#0B7A80;--accfg:#fff;--brd:#CBD6E0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#080C10;--card:#111A22;--ink:#E8EEF2;--mut:#9FB1BF;--acc:#4DE3E8;--accfg:#06262A;--brd:#24384A}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Sora',system-ui,sans-serif;line-height:1.5}
+main{max-width:640px;margin:0 auto;padding:18px 14px 40px}
+h1{font-family:'Space Grotesk',sans-serif;font-size:30px;line-height:1.1;margin:6px 0 4px}
+.k{font-size:11px;letter-spacing:.25em;color:var(--acc);font-weight:700}
+.m{color:var(--mut);font-size:13px}
+#v{position:relative;height:66vh;min-height:420px;max-height:680px;background:#120508;border-radius:18px;overflow:hidden;margin-top:12px;border:1px solid var(--brd)}
+#v canvas{width:100%;height:100%;display:block;touch-action:none}
+.pl{position:absolute;left:10px;font-size:12px;padding:3px 10px;border-radius:999px;background:rgba(10,17,24,.8);color:#fff;border:1px solid rgba(255,255,255,.3);pointer-events:none}
+#dv{position:absolute;left:0;right:0;top:50%;height:2px;background:rgba(255,255,255,.35);pointer-events:none}
+.hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:11px;color:#c9a9a9;pointer-events:none}
+.ch{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.ch button{font:inherit;font-size:13px;cursor:pointer;border-radius:999px;border:2px solid var(--brd);background:transparent;color:var(--ink);padding:9px 14px;min-height:44px}
+.ch button[aria-pressed="true"],#pp{background:var(--acc);border-color:var(--acc);color:var(--accfg);font-weight:600}
+#pp{font:inherit;font-size:14px;cursor:pointer;border-radius:999px;border:2px solid var(--acc);padding:9px 18px;min-height:44px;min-width:92px}
+input[type=range]{flex:1;min-width:140px;accent-color:var(--acc);height:44px}
+.card{background:var(--card);border:1px solid var(--brd);border-radius:16px;padding:14px;margin-top:12px}
+.card b{font-family:'Space Grotesk',sans-serif;font-size:17px;display:block;margin-bottom:2px}
+.tk{display:flex;justify-content:space-between;font-size:10px;color:var(--mut);margin-top:-4px}
+label{font-size:13px;display:flex;gap:8px;align-items:center;margin-top:10px}
+#v canvas.mm{position:absolute;right:8px;width:120px;height:120px;border-radius:10px;pointer-events:none;border:1px solid rgba(255,255,255,.3)}
+#lbs{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lb{position:absolute;left:0;top:0;font-size:10px;white-space:nowrap;padding:1px 5px;border-radius:8px;background:rgba(10,17,24,.8);color:#E8EEF2;border:1px solid rgba(255,255,255,.3)}
+.vg{position:absolute;left:0;right:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 52%,rgba(0,0,0,.78) 100%)}
+</style>
+</head>
+<body>
+<main>
+<div class="k">GLOBAL HEALTHCARE CONCLAVE 2026</div>
+<h1>Endoscope journey: pinna to Eustachian tube</h1>
+<p class="m" style="margin:0">Follow an endoscope from the pinna through the ear canal, eardrum and middle ear into the Eustachian tube, normal ear (top) vs chronic otitis media (bottom), using the HRCT measurements from the study.</p>
+<div class="ch" id="md" role="group" aria-label="Mode"></div>
+<div id="v"><canvas id="cv"></canvas><div id="dv"></div><div id="lbs"></div><canvas class="mm" id="m0" width="120" height="120"></canvas><canvas class="mm" id="m1" width="120" height="120"></canvas><div class="vg" id="vg0"></div><div class="vg" id="vg1"></div><div class="pl" id="pc0"></div><div class="pl" id="pc1"></div><div class="pl" id="l0" style="top:10px"></div><div class="pl" id="l1"></div><div class="hint" id="hint"></div></div>
+<div id="wk"><div class="ch"><button id="pp">Pause</button><span class="m" id="pos"></span></div><input type="range" id="sl" min="0" max="1000" value="0" aria-label="Position along the path" style="width:100%"><div id="tk2" style="position:relative;height:30px;font-size:10px;color:var(--mut)"></div></div>
+<div class="card"><b id="st"></b><span id="sx" style="font-size:14px"></span></div>
+<div class="m" style="margin-top:12px">Quick compare</div><div class="ch" id="qc" role="group" aria-label="Quick compare" style="margin-top:4px"></div><div class="m" style="margin-top:10px">Top ear (green)</div><div class="ch" id="gr" role="group" aria-label="Top ear" style="margin-top:4px"></div>
+<div class="m" style="margin-top:10px">Bottom ear (orange)</div><div class="ch" id="vw" role="group" aria-label="Bottom ear" style="margin-top:4px"></div>
+<label><input type="checkbox" id="mg" checked> Magnify width differences ×5 (real values stay in the text)</label>
+<p class="m">Illustrative reconstruction from mean measurements, not a real endoscopy. The tube is drawn round in the bony part and slit-like in the cartilaginous part; mucosal swelling, mucus and debris are schematic. The eardrum perforation, discharge and cholesteatoma sac are typical COM features drawn for illustration, not measured on HRCT. Supplementary markers, not a diagnosis.<br>Dr. Abhishek M &amp; Dr. Syed Ali Munavar, Sapthagiri Hospital, Bengaluru · <a href="mailto:syedalimunaver@gmail.com" style="color:var(--acc)">syedalimunaver@gmail.com</a><br><a href="https://claude.ai/artifact/DD3onZbpdWdYvWRdLcjT6G" style="color:var(--acc)">Also see the outside 3D view of the ear</a></p>
+</main>
+<script>
+(function(){
+var V=THREE.Vector3,Y=new V(0,1,0),$=function(i){return document.getElementById(i)};
+var D={N:{n:'Normal',t:126.19,p:3.98,i:2.57,tint:0xe8908c,fa:.035},
+C:{n:'COM',t:131.93,p:3.67,i:2.51,tint:0xd4685f,fa:.07,pp:'< 0.001'},
+M:{n:'Mucosal COM',t:133.65,p:3.66,i:2.48,tint:0xbf3f45,fa:.13,pp:'= 0.0002'},
+S:{n:'Squamosal COM',t:128.66,p:3.74,i:2.56,tint:0xe6c3b4,fa:.04,pp:'= 0.01'}};
+var A='N',Bk='C',P=0,play=true,yaw=0,pit=0,drag=false,DUR=70,worlds=[],tm=0,hold=0;
+function chips(id,arr,get,set){var h=$(id);h.innerHTML='';arr.forEach(function(a){var b=document.createElement('button');b.textContent=a[1];b.setAttribute('aria-pressed',get()===a[0]);b.onclick=function(){set(a[0]);ui();build()};h.appendChild(b)})}
+function ui(){chips('md',[['anat','Anatomy: angle & eardrum'],['walk','Walk-through']],function(){return mode},function(v){mode=v});
+chips('qc',[['NC','Normal vs COM'],['CM','COM vs Mucosal'],['NM','Normal vs Mucosal'],['NS','Normal vs Squamosal'],['MS','Mucosal vs Squamosal']],function(){return A+Bk},function(v){A=v[0];Bk=v[1]});
+chips('gr',[['N','Normal'],['C','COM'],['M','Mucosal'],['S','Squamosal']],function(){return A},function(v){A=v});
+chips('vw',[['N','Normal'],['C','COM'],['M','Mucosal'],['S','Squamosal'],['','None']],function(){return Bk},function(v){Bk=v})}
+var cv=$('cv'),R=new THREE.WebGLRenderer({canvas:cv,antialias:true});R.setPixelRatio(Math.min(devicePixelRatio||1,2));R.setScissorTest(true);
+function sm(x){x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)}
+function old(s,Pd,I){if(s<10)return 5.5+(Pd/2-5.5)*sm(s/10);if(s<23.3)return Pd/2+(I/2-Pd/2)*sm((s-10)/13.3);if(s<50)return I/2+(Pd/2*1.3-I/2)*sm((s-23.3)/26.7);return Pd/2*1.3+(6-Pd/2*1.3)*sm((s-50)/6)}
+function rr(s,Pd,I){if(s<8)return 9+(3.6-9)*sm(s/8);if(s<33)return 3.6-.4*Math.sin(Math.PI*(s-8)/25);var o=old(s-32,Pd,I);return s<35?3.6+(o-3.6)*sm((s-33)/2):o}
+function as(s){return s<43?1+1.2*sm((s-23.3)/20):2.2-1.1*sm((s-43)/13)}
+var tex=(function(){var c=document.createElement('canvas');c.width=c.height=256;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,256,256);
+for(var i=0;i<260;i++){var a=Math.random()*256,b=Math.random()*256,r=6+Math.random()*26,g=x.createRadialGradient(a,b,0,a,b,r);g.addColorStop(0,'rgba(60,0,0,'+(.06+Math.random()*.12)+')');g.addColorStop(1,'rgba(60,0,0,0)');x.fillStyle=g;x.fillRect(a-r,b-r,2*r,2*r)}
+x.strokeStyle='rgba(140,20,25,.35)';x.lineWidth=1.4;for(i=0;i<26;i++){x.beginPath();var px=Math.random()*256,py=Math.random()*256;x.moveTo(px,py);for(var k=0;k<5;k++){px+=Math.random()*50-25;py+=Math.random()*50-25;x.lineTo(px,py)}x.stroke()}
+var t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t})();
+function world(k){var d=D[k],mag=$('mg').checked?5:1,B0=D.N,
+ptd=Math.max(1.4,B0.p+(d.p-B0.p)*mag),id=Math.max(.9,B0.i+(d.i-B0.i)*mag),th=d.t*Math.PI/180,
+B=new V(-Math.cos(th),0,Math.sin(th)),Pp=new V(B.z,0,-B.x),O=new V(),per=(k==='C'||k==='M');
+function q(s,o){return O.clone().addScaledVector(B,s).addScaledVector(Pp,o)}
+var cu=new THREE.CatmullRomCurve3([new V(-42,0,0),new V(-24,0,0),new V(-9,0,0),new V(-4,0,0),O,q(5,0),q(15,1.2),q(28,2),q(40,1.4),q(46,1.4)],false,'centripetal'),L=cu.getLength(),
+sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(75,1,.05,200);sc.background=new THREE.Color(0x120508);sc.fog=new THREE.FogExp2(0x120508,.035);
+sc.add(new THREE.AmbientLight(0x6a3a3a,.55));var lt=new THREE.PointLight(0xfff0e0,1.8,50,2);cam.add(lt);sc.add(cam);
+var S=240,Rn=30,pos=[],col=[],uv=[],ix=[];
+for(var i=0;i<=S;i++){var u=i/S,s=u*L,p=cu.getPointAt(u),T=cu.getTangentAt(u),sd=new V().crossVectors(T,Y).normalize(),up=new V().crossVectors(sd,T).normalize(),r=rr(s,ptd,id),a=as(s),rx=r/Math.sqrt(a),ry=r*Math.sqrt(a),
+c=new THREE.Color(s<33?0xe3b09a:s<42?0xf0c4c4:d.tint);
+if(s>=33&&s<42&&k!=='N')c.lerp(new THREE.Color(d.tint),.5);if(s>=42&&s<55.3)c.lerp(new THREE.Color(0xf4d8cc),.4);
+for(var j=0;j<=Rn;j++){var an=j/Rn*Math.PI*2,f=1+(s>42?d.fa:.012)*Math.sin(an*9+s*.35),x=Math.cos(an)*rx*f,y=Math.sin(an)*ry*f;
+pos.push(p.x+sd.x*x+up.x*y,p.y+sd.y*x+up.y*y,p.z+sd.z*x+up.z*y);col.push(c.r,c.g,c.b);uv.push(j/Rn*3,s/7)}}
+for(i=0;i<S;i++)for(j=0;j<Rn;j++){var a1=i*(Rn+1)+j,b=a1+Rn+1;ix.push(a1,b,a1+1,b,b+1,a1+1)}
+var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(ix);g.computeVertexNormals();
+sc.add(new THREE.Mesh(g,new THREE.MeshStandardMaterial({map:tex,bumpMap:tex,bumpScale:2,vertexColors:true,roughness:.45,metalness:0,side:THREE.DoubleSide})));
+function at(s,ang,fr){var u=Math.min(1,s/L),p=cu.getPointAt(u),T=cu.getTangentAt(u),sd=new V().crossVectors(T,Y).normalize(),up=new V().crossVectors(sd,T).normalize(),r=rr(s,ptd,id),a=as(s),rx=r/Math.sqrt(a)*fr,ry=r*Math.sqrt(a)*fr;
+return p.addScaledVector(sd,Math.cos(ang)*rx).addScaledVector(up,Math.sin(ang)*ry)}
+var tp=cu.getPointAt(33/L),geo;
+if(per){var sh=new THREE.Shape();sh.absarc(0,0,3.7,0,6.2832,false);var hl=new THREE.Path(),hr=k==='M'?2.1:1.7;hl.absarc(.4,-.4,hr,0,6.2832,true);sh.holes.push(hl);geo=new THREE.ShapeGeometry(sh,32)}else geo=new THREE.CircleGeometry(3.7,40);
+var tmat=new THREE.MeshStandardMaterial({color:per?0xd9a79a:0xe6d8cc,roughness:.35,transparent:true,opacity:1,side:THREE.DoubleSide}),tmm=new THREE.Mesh(geo,tmat);tmm.rotation.y=Math.PI/2;tmm.position.copy(tp);sc.add(tmm);
+function bmat(c){return new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide})}
+if(per){var rg=new THREE.Mesh(new THREE.RingGeometry(hr,hr+.3,32),bmat(0xb03a3a));rg.position.set(.4,-.4,.01);tmm.add(rg);
+if(k==='M')for(i=0;i<7;i++){var db=new THREE.Mesh(new THREE.SphereGeometry(.28,8,6),new THREE.MeshPhongMaterial({color:0xf0dc8a,shininess:100}));db.position.set(.4+Math.cos(i)*(hr+.1),-.4+Math.sin(i)*(hr+.1),-.15);tmm.add(db)}}
+else{var mn=new THREE.Mesh(new THREE.PlaneGeometry(.35,2.6),bmat(0xc8a898));mn.position.set(0,.9,.01);tmm.add(mn);var lr=new THREE.Mesh(new THREE.CircleGeometry(.7,3),bmat(0xfff3e0));lr.position.set(0,-1.8,.01);tmm.add(lr);
+if(k==='S'){var pit=new THREE.Mesh(new THREE.CircleGeometry(.8,20),bmat(0x080303));pit.position.set(0,2.5,.02);tmm.add(pit);var sk=new THREE.Mesh(new THREE.SphereGeometry(1.5,16,12),new THREE.MeshStandardMaterial({color:0xf6f0e2,roughness:.3}));sk.position.copy(tp).add(new V(1.3,2.4,0));sc.add(sk)}}
+if(k!=='N'){var n=k==='S'?30:44,gm=k==='S'?new THREE.BoxGeometry(.5,.07,.38):new THREE.SphereGeometry(.2,10,8),
+mt=new THREE.MeshPhongMaterial({color:k==='S'?0xf5efe0:0xfff0c8,shininess:120,transparent:true,opacity:k==='S'?1:.82});
+for(i=0;i<n;i++){var m=new THREE.Mesh(gm,mt),s0=k==='S'?40+Math.random()*26:(k==='M'&&i<12?14+Math.random()*17:37+Math.random()*40),an2=Math.random()*6.28,sz=.6+Math.random()*(k==='S'?.9:1.3);m.scale.setScalar(sz);m.position.copy(at(s0,an2,.93));m.rotation.set(Math.random()*3,Math.random()*3,Math.random()*3);sc.add(m)}}
+var N=70,pg=new THREE.BufferGeometry(),pa=new Float32Array(N*3),ph=[],sp=k==='N'?3.2:1;pg.setAttribute('position',new THREE.BufferAttribute(pa,3));
+for(i=0;i<N;i++)ph.push([Math.random(),Math.random()*6.28,.2+Math.random()*.7]);
+var pt=new THREE.Points(pg,new THREE.PointsMaterial({color:0xffe6c8,size:.16,transparent:true,opacity:.75}));pt.frustumCulled=false;sc.add(pt);
+function flow(t){for(var i=0;i<N;i++){var h=ph[i],u=(h[0]+t*sp/(L-42))%1,v=at(42+u*(L-42),h[1],h[2]);pa[i*3]=v.x;pa[i*3+1]=v.y;pa[i*3+2]=v.z}pg.attributes.position.needsUpdate=true}
+var mk=[];
+function mk1(s0,tx,rg2,cl){var u0=s0/L,p=cu.getPointAt(u0),T=cu.getTangentAt(u0),sd=new V().crossVectors(T,Y).normalize(),up=new V().crossVectors(sd,T).normalize(),r=rr(s0,ptd,id);
+if(rg2){var m=new THREE.Mesh(new THREE.TorusGeometry(r*.97,.05,8,48),bmat(0xffd166));m.position.copy(p);m.quaternion.setFromUnitVectors(new V(0,0,1),T);sc.add(m)}
+var el=document.createElement('div');el.className='lb';el.style.display='none';el.style.color=cl;el.style.borderColor=cl;el.style.fontSize='12px';el.textContent=tx;$('lbs').appendChild(el);mk.push({s:s0,el:el,pos:p.clone().addScaledVector(up,r*.88)})}
+mk1(33,k==='N'?'Eardrum intact':per?'Perforated eardrum':'Intact · attic retraction',false,'#f1e4d2');
+mk1(48,'PTD '+d.p.toFixed(2)+' mm',true,'#ffd166');mk1(55.3,'ID '+d.i.toFixed(2)+' mm',true,'#ffd166');
+return{k:k,d:d,sc:sc,cam:cam,cu:cu,L:L,flow:flow,mk:mk,tmat:tmat,per:per}}
+function build(){var an=mode==='anat';$('wk').style.display=an?'none':'';['l0','l1','m0','m1','vg0','vg1','pc0','pc1'].forEach(function(i){$(i).style.display=an?'none':''});$('hint').textContent=an?'Drag to rotate · pinch or scroll to zoom':'Press play · drag to look around';
+if(an){abuild();return}$('lbs').innerHTML='';worlds=[];worlds.push(world(A));if(Bk)worlds.push(world(Bk));$('dv').style.display=worlds.length>1?'block':'none';size();txt()}
+function size(){var w=cv.clientWidth,h=cv.clientHeight;R.setSize(w,h,false);
+}
+function pane(i){var w=cv.clientWidth,h=cv.clientHeight,n=worlds.length,ph=h/n;return{x:0,y:h-(i+1)*ph,w:w,h:ph}}
+var PP={'N-C':{t:'0.004',p:'<0.001',i:'0.60'},'N-M':{t:'0.0003',p:'0.0002',i:'0.52'},'N-S':{t:'0.30',p:'0.01',i:'0.92'},'M-S':{t:'0.02',p:'0.60',i:'0.66'}},ED={N:'intact',C:'perforated',M:'perforated, with mucoid discharge',S:'intact, with an attic retraction pocket and cholesteatoma sac'};
+function pair(a,b){var o='NCMS';if(o.indexOf(a)>o.indexOf(b)){var t=a;a=b;b=t}return PP[a+'-'+b]||null}
+function cmpTxt(key,u,dg){var X=D[A],Yy=Bk?D[Bk]:null,xv=X[key],s1=xv.toFixed(dg)+u+' ('+X.n+')';if(!Yy)return s1;var yv=Yy[key],df=yv-xv,pr=pair(A,Bk),pp=pr?pr[key]:null;
+return s1+' vs '+yv.toFixed(dg)+u+' ('+Yy.n+'), '+(df>0?'+':'−')+Math.abs(df).toFixed(dg)+u+(pp?', p '+(pp[0]==='<'?pp:'= '+pp)+(parseFloat(pp.replace('<',''))<.05?'':' (not significant)'):'; p not reported for this pair')}
+function txt(){var X=D[A],Yy=Bk?D[Bk]:null,s=P*(worlds[0]?worlds[0].L:88),h,b,eds=X.n+': '+ED[A]+(Yy?' · '+Yy.n+': '+ED[Bk]:'');
+if(s<8){h='Entering at the pinna';b='The endoscope passes the concha and enters the external ear canal.'}
+else if(s<31){h='External ear canal';b='About 25 mm of skin-lined canal leading to the eardrum.'+(A==='M'||Bk==='M'?' In mucosal COM, mucoid discharge may collect here (illustrative).':'')}
+else if(s<37){h='Tympanic membrane (eardrum)';b=eds+'. Intact membranes fade so the scope can pass (virtual); it passes through a perforation for real.'}
+else if(s<46){h='Middle ear to the tympanic orifice';b='The tube leaves the middle ear at an angle (TTA): '+cmpTxt('t','°',1)+'.'}
+else if(s<54){h='Bony part: the pretympanic segment';b='Pretympanic diameter (PTD): '+cmpTxt('p',' mm',2)+'.'}
+else if(s<60){h='The isthmus: narrowest point';b='Isthmus diameter (ID): '+cmpTxt('i',' mm',2)+'.'}
+else if(s<82){h='Cartilaginous part';b='In life this slit opens on swallowing to ventilate the middle ear and drain secretions. Lining changes and mucus in COM are drawn as an illustration.'}
+else{h='Opening into the nasopharynx';b='Secretions drain here. The study shows how tube geometry differs in COM, but cannot say whether it is a cause or an effect.'}
+$('st').textContent=h;$('sx').textContent=b}
+var mode='walk',zm=1,auto=true,AL=[],v3=new V(),CC={N:0x3ddc97,C:0xff8a4c,M:0xff4f7b,S:0xb98cff},
+DR={C:'perforated (illustrative)',M:'a central perforation with mucoid discharge (illustrative)',S:'an attic retraction pocket with a cholesteatoma sac (illustrative)'},PT={C:'0.004',M:'0.0003',S:'0.30'};
+var asc=new THREE.Scene(),acam=new THREE.PerspectiveCamera(40,1,1,1000),piv=new THREE.Group(),inn=new THREE.Group();asc.add(piv);piv.add(inn);inn.position.set(-4.5,0,-12.5);
+asc.add(new THREE.AmbientLight(0xffffff,.7));var dl0=new THREE.DirectionalLight(0xffffff,.9);dl0.position.set(40,90,60);asc.add(dl0);
+function MM(c,o,ex){return new THREE.MeshPhongMaterial(Object.assign({color:c,transparent:true,opacity:o,side:THREE.DoubleSide,depthWrite:false},ex||{}))}
+function bm(c){return new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide})}
+function rad(t,P0,I){return t<.35?P0+(I-P0)*sm(t/.35):I+(P0*1.25-I)*sm((t-.35)/.65)}
+function tubeG(cu,ptd,id){var S=60,Rn=24,pos=[],ix=[],K=1.8;for(var i=0;i<=S;i++){var t=i/S,p=cu.getPoint(t),T=cu.getTangent(t),sd=new V().crossVectors(T,Y).normalize(),up=new V().crossVectors(sd,T).normalize(),r=rad(t,ptd/2,id/2)*K;
+for(var j=0;j<=Rn;j++){var a=j/Rn*6.2832,c=Math.cos(a)*r,q=Math.sin(a)*r;pos.push(p.x+c*sd.x+q*up.x,p.y+c*sd.y+q*up.y,p.z+c*sd.z+q*up.z)}}
+for(i=0;i<S;i++)for(j=0;j<Rn;j++){var a1=i*(Rn+1)+j,b=a1+Rn+1;ix.push(a1,b,a1+1,b,b+1,a1+1)}
+var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(ix);g.computeVertexNormals();return g}
+function ear(k){var d=D[k],g=new THREE.Group(),an=[],mag=$('mg').checked?5:1,B0=D.N,ptd=Math.max(1.2,B0.p+(d.p-B0.p)*mag),id=Math.max(.8,B0.i+(d.i-B0.i)*mag),th=d.t*Math.PI/180,
+O=new V(2,0,0),B=new V(-Math.cos(th),0,Math.sin(th)),Pp=new V(B.z,0,-B.x),pts=[],hx='#'+CC[k].toString(16).padStart(6,'0');
+for(var i=0;i<=4;i++){var t=i/4;pts.push(O.clone().addScaledVector(B,40*t).addScaledVector(Pp,3*Math.sin(Math.PI*t)))}
+var cu=new THREE.CatmullRomCurve3(pts);
+function anc(x,p,c){var o=new THREE.Object3D();o.position.copy(p);g.add(o);an.push({o:o,t:x,c:c})}
+function ln(a,b,c){var l=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),new THREE.LineDashedMaterial({color:c,dashSize:3,gapSize:2}));l.computeLineDistances();g.add(l)}
+g.add(new THREE.Mesh(tubeG(cu,ptd,id),MM(CC[k],.6,{shininess:80})));
+[.22,.55,.88].forEach(function(t){var a=new THREE.Mesh(new THREE.ConeGeometry(1.2,3.2,10),bm(0xffffff));a.position.copy(cu.getPointAt(t));a.quaternion.setFromUnitVectors(Y,cu.getTangentAt(t));g.add(a)});
+var cn=new THREE.Mesh(new THREE.CylinderGeometry(5,5,26,28,1,true),MM(0xd9b99b,.22));cn.rotation.z=Math.PI/2;cn.position.x=-12;g.add(cn);
+var dr=new THREE.Mesh(new THREE.CircleGeometry(5.2,32),MM(k==='N'?0xe8dccb:0xd98b7a,.85));dr.rotation.y=Math.PI/2;dr.position.x=1;g.add(dr);var dl='Eardrum intact';
+if(k==='N'){var mn=new THREE.Mesh(new THREE.PlaneGeometry(.7,4),bm(0xb08f80));mn.position.set(0,1,-.03);dr.add(mn)}
+if(k==='C'||k==='M'){var pr=k==='M'?2.9:2.4,pf=new THREE.Mesh(new THREE.CircleGeometry(pr,28),bm(0x050505)),rm=new THREE.Mesh(new THREE.RingGeometry(pr,pr+.6,28),bm(0xa83a3a));pf.position.set(1,-.6,-.05);rm.position.set(1,-.6,-.06);dr.add(pf);dr.add(rm);dl='Perforated eardrum';
+if(k==='M')for(i=0;i<6;i++){var dp=new THREE.Mesh(new THREE.SphereGeometry(.45,8,6),MM(0xe9d27a,.9));dp.position.set(1+Math.random()*2-1,-4-Math.random()*1.2,-.6-Math.random()*.5);dr.add(dp)}}
+if(k==='S'){var nt=new THREE.Mesh(new THREE.CircleGeometry(1.3,20),bm(0x050505));nt.position.set(0,4,-.05);dr.add(nt);var sk=new THREE.Mesh(new THREE.SphereGeometry(3.2,20,14),MM(0xf6f0e2,.95));sk.position.set(3,3.6,-2);g.add(sk);dl='Retraction + cholesteatoma'}
+var cav=new THREE.Mesh(new THREE.SphereGeometry(7,24,16),MM(k==='N'?0xf2b8c6:0xff6b8a,k==='N'?.15:.3));cav.scale.set(.8,1,1);cav.position.set(3,0,0);g.add(cav);
+var np=new THREE.Mesh(new THREE.SphereGeometry(9,24,16),MM(0x6aa8ff,.13));np.position.copy(cu.getPoint(1)).addScaledVector(B,5);g.add(np);
+ln(new V(-30,0,0),O,0xaab8c4);ln(O,O.clone().addScaledVector(B,46),CC[k]);
+var f0=Math.PI-th,ar=[O];for(i=0;i<=24;i++){var f=f0+(Math.PI-f0)*i/24;ar.push(new V(O.x+16*Math.cos(f),0,O.z+16*Math.sin(f)))}
+var wi=[];for(i=1;i<=24;i++)wi.push(0,i,i+1);var wg=new THREE.BufferGeometry().setFromPoints(ar);wg.setIndex(wi);g.add(new THREE.Mesh(wg,new THREE.MeshBasicMaterial({color:0xffd166,transparent:true,opacity:.3,side:THREE.DoubleSide,depthWrite:false})));
+g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ar.slice(1)),new THREE.LineBasicMaterial({color:0xffd166})));
+if(k!=='N'){var tn=B0.t*Math.PI/180,Bn=new V(-Math.cos(tn),0,Math.sin(tn)),en=O.clone().addScaledVector(Bn,38);ln(O,en,0xffffff);anc('Normal '+B0.t.toFixed(1)+'°',en.clone().add(new V(0,6,0)),'#ffffff')}
+anc(d.n,new V(-24,9,0),hx);anc(dl,new V(-2,12,0),'#f1e4d2');
+var fm=f0+(Math.PI-f0)/2;anc('TTA '+d.t.toFixed(1)+'°'+(k==='N'?'':' ('+(d.t>B0.t?'+':'')+(d.t-B0.t).toFixed(1)+'°)'),new V(O.x+24*Math.cos(fm),0,O.z+24*Math.sin(fm)),'#ffd166');
+anc('Turn '+(180-d.t).toFixed(1)+'°',O.clone().addScaledVector(B,12).add(new V(0,9,0)),hx);
+anc('PTD '+d.p.toFixed(2)+' mm',cu.getPointAt(.06).add(new V(0,7,0)),'#fff');
+var ip=cu.getPointAt(.35),mk=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),bm(0xffffff));mk.position.copy(ip);g.add(mk);anc('Isthmus '+d.i.toFixed(2)+' mm',ip.clone().add(new V(0,8,0)),'#fff');
+anc('Nasopharynx',np.position.clone().add(new V(0,11,0)),'#6aa8ff');return{g:g,an:an}}
+function abuild(){while(inn.children.length)inn.remove(inn.children[0]);$('lbs').innerHTML='';AL=[];$('dv').style.display='none';
+var list=Bk?[[A,-32],[Bk,32]]:[[A,0]];
+list.forEach(function(e){var r=ear(e[0]);r.g.position.z=e[1];inn.add(r.g);r.an.forEach(function(a){var el=document.createElement('div');el.className='lb';el.textContent=a.t;el.style.borderColor=a.c;el.style.color=a.c;$('lbs').appendChild(el);AL.push({e:el,o:a.o})})});size();atxt()}
+function atxt(){var X=D[A],Yy=Bk?D[Bk]:null;$('st').textContent='Angle and eardrum: '+X.n+(Yy?' vs '+Yy.n:'');
+$('sx').textContent='TTA '+cmpTxt('t','°',1)+'. The tube turns '+(180-X.t).toFixed(1)+'°'+(Yy?' vs '+(180-Yy.t).toFixed(1)+'°':'')+' from the ear-canal line. Eardrum: '+X.n+' '+ED[A]+(Yy?'; '+Yy.n+' '+ED[Bk]:'')+'.'}
+function mm(w,i){var c=$('m'+i),x=c.getContext('2d'),W=c.width,H=c.height,f=function(p){return[6+(p.x+42)*1.55,H-10-(p.z+2)*1.55]};x.clearRect(0,0,W,H);x.fillStyle='rgba(10,17,24,.82)';x.fillRect(0,0,W,H);
+var o=f({x:0,z:0}),th=w.d.t*Math.PI/180;x.strokeStyle='#fff';x.lineWidth=3;x.beginPath();for(var j=0;j<=60;j++){var p=f(w.cu.getPointAt(j/60));j?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1])}x.stroke();
+x.strokeStyle='#ffd166';x.lineWidth=2;x.beginPath();x.arc(o[0],o[1],20,-(Math.PI-th),-Math.PI,true);x.stroke();x.fillStyle='#ffd166';x.font='12px sans-serif';x.fillText('TTA '+w.d.t.toFixed(1)+'°',o[0]-8,o[1]-26);
+var tm0=f({x:-9,z:0});x.fillStyle=w.per?'#ff6b6b':'#9fe8c0';x.fillRect(tm0[0]-1,tm0[1]-9,3,18);x.font='10px sans-serif';x.fillText('TM',tm0[0]-8,tm0[1]+22);x.fillStyle='#9fb1bf';x.fillText('pinna',4,o[1]+22);
+var q=f(w.cu.getPointAt(P));x.fillStyle=i?'#ff8a4c':'#3ddc97';x.beginPath();x.arc(q[0],q[1],6,0,6.3);x.fill()}
+var lastT=0,PM=new Map(),pd0=0;
+function pdist(){if(PM.size<2)return 0;var a=Array.from(PM.values());return Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])}
+function frame(now){requestAnimationFrame(frame);var dt=Math.min(.05,(now-lastT)/1000||0);lastT=now;tm+=dt;var W=cv.clientWidth,H=cv.clientHeight;
+if(mode==='anat'){if(auto)piv.rotation.y+=.003;var asp=W/H,dd=(Bk?250:135)*zm*Math.max(1,.95/asp);acam.aspect=asp;acam.updateProjectionMatrix();acam.position.set(0,.72*dd,.69*dd);acam.lookAt(0,0,0);
+R.setViewport(0,0,W,H);R.setScissor(0,0,W,H);R.render(asc,acam);
+var rs=AL.map(function(l){l.o.getWorldPosition(v3);v3.project(acam);return{l:l,x:(v3.x*.5+.5)*W,y:(-v3.y*.5+.5)*H,w:l.e.offsetWidth+6,h:l.e.offsetHeight+4}});
+rs.sort(function(a,b){return a.y-b.y});
+for(var it=0;it<3;it++)for(var a=0;a<rs.length;a++)for(var b=a+1;b<rs.length;b++){var A=rs[a],B2=rs[b];if(Math.abs(A.x-B2.x)<(A.w+B2.w)/2&&Math.abs(A.y-B2.y)<(A.h+B2.h)/2)B2.y=A.y+(A.h+B2.h)/2}
+rs.forEach(function(r){r.l.e.style.transform='translate(-50%,-50%) translate('+Math.max(r.w/2,Math.min(W-r.w/2,r.x))+'px,'+Math.max(r.h/2,Math.min(H-r.h/2,r.y))+'px)'});return}
+if(play){if(P>=.995){hold+=dt;if(hold>2){P=0;hold=0}}else P=Math.min(.995,P+dt/DUR)}
+$('sl').value=Math.round(P*1000);$('pp').textContent=play?'Pause':'Play';if(!drag){yaw*=.94;pit*=.94}
+if(worlds[0])$('pos').textContent='Depth '+Math.round(P*worlds[0].L)+' mm from the pinna';
+worlds.forEach(function(w,i){var r=pane(i),u=P,p=w.cu.getPointAt(u),T=w.cu.getTangentAt(u),sd=new V().crossVectors(T,Y).normalize(),dir=T.clone().applyAxisAngle(Y,-yaw).applyAxisAngle(sd,pit),s=u*w.L,top=i*H/worlds.length;
+w.cam.position.copy(p);w.cam.lookAt(p.clone().add(dir));w.cam.aspect=r.w/r.h;w.cam.updateProjectionMatrix();w.flow(tm);
+w.tmat.opacity=w.per?1:Math.min(.92,Math.max(0,(Math.abs(s-33)-.3)/3));
+R.setViewport(r.x,r.y,r.w,r.h);R.setScissor(r.x,r.y,r.w,r.h);R.render(w.sc,w.cam);
+var l=$(i?'l1':'l0'),real=2*rr(s,w.d.p,w.d.i);l.style.display='block';l.style.top=(top+10)+'px';l.textContent=w.d.n+' · lumen ≈ Ø '+real.toFixed(1)+' mm';
+var m=$('m'+i);m.style.display='block';m.style.top=(top+40)+'px';mm(w,i);
+var vg=$('vg'+i);vg.style.display='block';vg.style.top=top+'px';vg.style.height=r.h+'px';
+var pc=$('pc'+i),a1=s>44&&s<56,a2=s>52&&s<62,hi='color:#ffd166;font-weight:700';pc.style.display='block';pc.style.top=(top+r.h-34)+'px';
+pc.innerHTML='<span style="'+(a1?hi:'')+'">PTD '+w.d.p.toFixed(2)+' mm</span> · <span style="'+(a2?hi:'')+'">ID '+w.d.i.toFixed(2)+' mm</span>';
+w.mk.forEach(function(q){var a=q.s-s,el=q.el;if(a>-2&&a<18){var v=q.pos.clone().project(w.cam);if(v.z<1&&Math.abs(v.x)<1.1&&Math.abs(v.y)<1.1){el.style.display='block';el.style.transform='translate(-50%,-50%) translate('+((v.x*.5+.5)*r.w)+'px,'+(top+(-v.y*.5+.5)*r.h)+'px)';return}}el.style.display='none'})});
+for(var z=worlds.length;z<2;z++)['l','m','vg','pc'].forEach(function(x){$(x+z).style.display='none'});
+txt()}
+cv.addEventListener('pointerdown',function(e){cv.setPointerCapture(e.pointerId);PM.set(e.pointerId,[e.clientX,e.clientY]);auto=false;drag=true;pd0=pdist()});
+cv.addEventListener('pointermove',function(e){if(!PM.has(e.pointerId))return;var o=PM.get(e.pointerId);PM.set(e.pointerId,[e.clientX,e.clientY]);var dx=e.clientX-o[0],dy=e.clientY-o[1];
+if(PM.size>1){var d=pdist();if(mode==='anat'&&pd0&&d)zm=Math.max(.5,Math.min(2.2,zm*pd0/d));pd0=d;return}
+if(mode==='anat'){piv.rotation.y+=dx*.01;piv.rotation.x=Math.max(-.5,Math.min(.9,piv.rotation.x+dy*.006))}else{yaw=Math.max(-1.2,Math.min(1.2,yaw+dx*.006));pit=Math.max(-.9,Math.min(.9,pit+dy*.006))}});
+['pointerup','pointercancel'].forEach(function(n){cv.addEventListener(n,function(e){PM.delete(e.pointerId);drag=PM.size>0;pd0=pdist()})});
+cv.addEventListener('wheel',function(e){if(mode!=='anat')return;e.preventDefault();zm=Math.max(.5,Math.min(2.2,zm*(1+e.deltaY*.001)))},{passive:false});
+$('pp').onclick=function(){play=!play;if(play&&P>=.995)P=0};
+$('sl').oninput=function(){P=this.value/1000;play=false};
+
+$('mg').onchange=build;window.addEventListener('resize',size);
+(function(){var a=[[0,'Pinna'],[.23,'Canal'],[.375,'Eardrum'],[.46,'Middle ear'],[.63,'Isthmus'],[.8,'Cartilage'],[.98,'Nose']],h=$('tk2');a.forEach(function(t,i){var e=document.createElement('span');e.textContent=t[1];e.style.cssText='position:absolute;top:'+(i%2?13:0)+'px;left:'+t[0]*100+'%;transform:translateX(-'+t[0]*100+'%)';h.appendChild(e)})})();
+ui();build();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
